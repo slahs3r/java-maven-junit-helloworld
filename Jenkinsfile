@@ -29,8 +29,8 @@ pipeline {
 
     stage('Deploy') {
       agent {
-        dockerfile {
-          filename 'Dockerfile'
+        node {
+          label 'master'
         }
 
       }
