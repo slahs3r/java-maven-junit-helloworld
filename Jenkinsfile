@@ -4,8 +4,8 @@ pipeline {
     stage('Build') {
       agent {
         docker {
-          args '-v /root/.m2:/root/.m2 -m 256m'
           image 'maven:3-alpine'
+          args '-v /home/jenkins/.m2:/root/.m2 -m 256m'
         }
 
       }
@@ -19,7 +19,7 @@ pipeline {
       agent {
         docker {
           image 'maven:3-alpine'
-          args '-v /root/.m2:/root/.m2 -m 256m'
+          args '-v /home/jenkins/.m2:/root/.m2 -m 256m'
         }
 
       }
@@ -32,7 +32,7 @@ pipeline {
       agent {
         docker {
           image 'maven:3-alpine'
-          args '-v /root/.m2:/root/.m2 -m 256m'
+          args '-v /home/jenkins/.m2:/root/.m2 -m 256m'
         }
 
       }
