@@ -8,6 +8,13 @@ pipeline {
   }
   stages {
     stage('Build') {
+      agent {
+        docker {
+          args '-v /root/.m2:/root/.m2 -m 256m'
+          image 'maven:3-alpine'
+        }
+
+      }
       steps {
         sh 'mvn -B -DskipTests=true clean package'
         archiveArtifacts 'target/java-maven-junit-helloworld-2.0-SNAPSHOT.jar'
@@ -15,12 +22,26 @@ pipeline {
     }
 
     stage('Tests-unit') {
+      agent {
+        docker {
+          image 'maven:3-alpine'
+          args '-v /root/.m2:/root/.m2 -m 256m'
+        }
+
+      }
       steps {
         sh 'mvn test'
       }
     }
 
     stage('Tests-integration') {
+      agent {
+        docker {
+          image 'maven:3-alpine'
+          args '-v /root/.m2:/root/.m2 -m 256m'
+        }
+
+      }
       steps {
         sh 'mvn verify'
         archiveArtifacts 'target/site/jacoco-both/*.html'
@@ -29,8 +50,8 @@ pipeline {
 
     stage('Deploy') {
       agent {
-        dockerfile {
-          filename 'ansible/docker/Dockerfile'
+        node {
+          label 'master'
         }
 
       }
