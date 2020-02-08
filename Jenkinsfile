@@ -29,8 +29,8 @@ pipeline {
 
     stage('Deploy') {
       agent {
-        node {
-          label 'master'
+        dockerfile {
+          filename 'ansible/docker/Dockerfile'
         }
 
       }
