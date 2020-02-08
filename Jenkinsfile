@@ -49,13 +49,10 @@ pipeline {
         }
 
       }
-      environment {
-        PATH = '$PATH:/usr/local/bin'
-      }
       steps {
         copyArtifacts(projectName: '${JOB_NAME}', selector: specific('${BUILD_NUMBER}'), filter: 'target/java-maven-junit-helloworld-2.0-SNAPSHOT.jar', target: 'target/', fingerprintArtifacts: true)
         sh '''whoami
-pwd '''
+pwd  echo $PATH'''
         ansiblePlaybook(playbook: 'ansible/deploy_app.yml', become: true, inventory: 'ansible/hosts', disableHostKeyChecking: true)
       }
     }
