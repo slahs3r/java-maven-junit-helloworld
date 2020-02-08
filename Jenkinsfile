@@ -36,7 +36,7 @@ pipeline {
       }
       steps {
         copyArtifacts(projectName: '${JOB_NAME}', selector: specific('${BUILD_NUMBER}'), filter: 'target/java-maven-junit-helloworld-2.0-SNAPSHOT.jar', target: 'target/', fingerprintArtifacts: true)
-        sh 'java -cp target/java-maven-junit-helloworld-2.0-SNAPSHOT.jar com.example.javamavenjunithelloworld.HelloApp'
+        ansiblePlaybook(playbook: 'ansible/prepare_host.yml', become: true, inventory: 'ansible/hosts')
       }
     }
 
