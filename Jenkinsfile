@@ -1,5 +1,8 @@
 pipeline {
   agent none
+  options {
+    copyArtifactPermission('*');
+    }
   stages {
     stage('Build') {
       agent {
