@@ -44,4 +44,5 @@
         image: java:latest
         state: started
         name: java_app
+        output_logs: true
 
