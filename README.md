@@ -2,6 +2,12 @@
 
 A „Hello World!” sample written in Java using Maven for the build, that showcases a few very simple tests.
 
+# To deploy an app to hosts:
+* Configure ansible/hosts
+* copy ssh public key to the hosts
+* run pipeline in Jenkins [java-maven-junit-helloworld](http://ec2-3-93-198-147.compute-1.amazonaws.com:8080/job/java-maven-junit-helloworld/) to ship and deploy the application to the hosts
+* check the output logs
+
 This example demonstrates:
 
 * A simple Java 8 application with tests
