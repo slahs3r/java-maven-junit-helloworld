@@ -1,13 +1,14 @@
 pipeline {
-  agent {
-    docker {
-      image 'maven:3-alpine'
-      args '-v /root/.m2:/root/.m2'
-    }
-
-  }
+  agent none
   stages {
     stage('Build') {
+      agent {
+        docker {
+          image 'maven:3-alpine'
+          args '-v /home/jenkins/.m2:/root/.m2 -m 256m'
+        }
+
+      }
       steps {
         sh 'mvn -B -DskipTests=true clean package'
         archiveArtifacts 'target/java-maven-junit-helloworld-2.0-SNAPSHOT.jar'
@@ -15,12 +16,26 @@ pipeline {
     }
 
     stage('Tests-unit') {
+      agent {
+        docker {
+          image 'maven:3-alpine'
+          args '-v /home/jenkins/.m2:/root/.m2 -m 256m'
+        }
+
+      }
       steps {
         sh 'mvn test'
       }
     }
 
     stage('Tests-integration') {
+      agent {
+        docker {
+          image 'maven:3-alpine'
+          args '-v /home/jenkins/.m2:/root/.m2 -m 256m'
+        }
+
+      }
       steps {
         sh 'mvn verify'
         archiveArtifacts 'target/site/jacoco-both/*.html'
@@ -28,9 +43,17 @@ pipeline {
     }
 
     stage('Deploy') {
+      agent {
+        node {
+          label 'master'
+        }
+
+      }
       steps {
         copyArtifacts(projectName: '${JOB_NAME}', selector: specific('${BUILD_NUMBER}'), filter: 'target/java-maven-junit-helloworld-2.0-SNAPSHOT.jar', target: 'target/', fingerprintArtifacts: true)
-        sh 'java -cp target/java-maven-junit-helloworld-2.0-SNAPSHOT.jar com.example.javamavenjunithelloworld.HelloApp'
+        sh '''whoami
+pwd  echo $PATH'''
+        ansiblePlaybook(playbook: 'ansible/deploy_app.yml', inventory: 'ansible/hosts', disableHostKeyChecking: true, colorized: true, installation: 'ansible-playbook')
       }
     }
 

@@ -1,0 +1,48 @@
+# Ansible playbook to preparse server
+---
+- name: "Install docker"
+  user: ec2-user
+  hosts: webserver
+  become: yes
+  tasks:
+    - name: Update all packages
+      yum:
+        name: '*'
+        state: latest
+        update_only: yes
+
+    - name: Ensure a list of yum packages are installed
+      yum:
+        name: "{{ packages }}"
+        state: latest
+        update_cache: yes
+      vars:
+        packages:
+        - python-pip
+        - yum-utils
+        - device-mapper-persistent-data
+        - lvm2
+        - docker
+
+    - name: Enable Docker service at startup
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Copy Dockerfile
+      copy: src=docker/Dockerfile dest=/tmp/Dockerfile
+
+    - name: Build Dockerfile
+      docker_image: 
+        name: java
+        path: /tmp
+        source: build
+
+    - name: Running the container
+      docker_container:
+        image: java:latest
+        state: started
+        name: java_app
+        output_logs: true
+
